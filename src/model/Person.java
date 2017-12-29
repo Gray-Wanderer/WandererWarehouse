@@ -1,18 +1,17 @@
-package Model;
+package model;
 
-import sun.reflect.generics.tree.Tree;
-
-import javax.xml.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
  * Created by Алена on 28.11.2017.
  */
 @XmlType(propOrder = {"name", "surname", "listItems"})
-public class Person implements Comparable<Person>{
+public class Person implements Comparable<Person> {
     private String name;
     private String surname;
 
@@ -73,28 +72,28 @@ public class Person implements Comparable<Person>{
         this.listItems = itemsList;
     }
 
-    public void setItem(Item item){
+    public void setItem(Item item) {
         listItems.add(item);
     }
 
-    public void clearPersone(){
+    public void clearPersone() {
         Item item;
-        while(listItems.size()!=0){
+        while (listItems.size() != 0) {
             item = listItems.first();
             item.clearItem();
             removeItem(item);
         }
-        if(event!=null)
+        if (event != null)
             event.removePersone(this);
         event = null;
     }
 
-    public void removeItem(Item item){
+    public void removeItem(Item item) {
         listItems.remove(item);
         item.setPerson(null);
     }
 
-    public void removeEvent(){
+    public void removeEvent() {
         event.removePersone(this);
         event = null;
     }
@@ -110,9 +109,9 @@ public class Person implements Comparable<Person>{
 
     @Override
     public int compareTo(Person person) {
-        if(getSurname().compareTo(person.getSurname())>0)
+        if (getSurname().compareTo(person.getSurname()) > 0)
             return 1;
-        else if(getSurname().compareTo(person.getSurname())<0)
+        else if (getSurname().compareTo(person.getSurname()) < 0)
             return -1;
         else
             return getName().compareTo(person.getName());
@@ -120,9 +119,9 @@ public class Person implements Comparable<Person>{
 
     @Override
     public String toString() {
-    StringBuffer s = new StringBuffer();
-    s.append(surname).append(" ").append(name);
-    return s.toString();
+        StringBuffer s = new StringBuffer();
+        s.append(surname).append(" ").append(name);
+        return s.toString();
     }
 
     @Override
@@ -132,12 +131,10 @@ public class Person implements Comparable<Person>{
 
         Person person = (Person) o;
 
-        if (getName() != null ? !getName().equals(person.getName()) : person.getName() != null) return false;
-        if (getSurname() != null ? !getSurname().equals(person.getSurname()) : person.getSurname() != null)
-            return false;
-        if (getListItems() != null ? !getListItems().equals(person.getListItems()) : person.getListItems() != null)
-            return false;
-        return event != null ? event.equals(person.event) : person.event == null;
+        return Objects.equals(getName(), person.getName()) &&
+                Objects.equals(getSurname(), person.getSurname()) &&
+                Objects.equals(getListItems(), person.getListItems()) &&
+                Objects.equals(event, person.event);
     }
 
     @Override
@@ -149,7 +146,7 @@ public class Person implements Comparable<Person>{
         return result;
     }
 
-    public String info(){
+    public String info() {
         StringBuffer s = new StringBuffer();
         s.append(name).append(" ").append(surname).append("").append(event.toString()).append(" ").append("( ").append(listItems.toString()).append(")");
         return s.toString();

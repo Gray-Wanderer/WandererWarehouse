@@ -1,11 +1,12 @@
-package Model;
+package model;
 
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
  * Created by Алена on 20.12.2017.
  */
-public class GroupItems implements Comparable<GroupItems>{
+public class GroupItems implements Comparable<GroupItems> {
     private String name;
     private TreeSet<Item> itemsList;
 
@@ -35,13 +36,13 @@ public class GroupItems implements Comparable<GroupItems>{
         this.itemsList = itemsList;
     }
 
-    public void removeItem(Item item){
+    public void removeItem(Item item) {
         itemsList.remove(item);
     }
 
-    public void clear(){
+    public void clear() {
         Item item;
-        while(itemsList.size()!=0){
+        while (itemsList.size() != 0) {
             item = itemsList.first();
             item.clearItem();
             removeItem(item);
@@ -65,8 +66,8 @@ public class GroupItems implements Comparable<GroupItems>{
 
         GroupItems that = (GroupItems) o;
 
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-        return getItemsList() != null ? getItemsList().equals(that.getItemsList()) : that.getItemsList() == null;
+        return Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getItemsList(), that.getItemsList());
     }
 
     @Override

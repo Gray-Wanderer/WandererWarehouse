@@ -1,16 +1,13 @@
-package Control;
+package control;
 
-import Model.Person;
+import model.Person;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static Control.DataList.defaultEvent;
-import static Control.DataList.itemsList;
-import static Control.DataList.personeList;
-import static View.Panes.*;
-import static View.Panes.ITEM_NUMBER_TEXTFIELD;
+import static control.DataList.personeList;
+import static view.Panes.*;
 
 /**
  * Created by Алена on 28.11.2017.
@@ -26,6 +23,5 @@ public class AddPersone implements ActionListener {
         PERSONE_NAME_TEXTFIELD.setText("");
         PERSONE_SURNAME_TEXTFIELD.setText("");
         JOptionPane.showMessageDialog(null, "Success", "Creating done", JOptionPane.PLAIN_MESSAGE);
-
     }
 }

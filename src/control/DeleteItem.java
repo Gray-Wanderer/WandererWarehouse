@@ -1,12 +1,12 @@
-package Control;
+package control;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static Control.DataList.itemsList;
-import static Control.DataList.selectedItem;
-import static View.Panes.ITEMS_LIST;
+import static control.DataList.itemsList;
+import static control.DataList.selectedItem;
+import static view.Panes.ITEMS_LIST;
 
 /**
  * Created by Алена on 04.12.2017.

@@ -1,13 +1,11 @@
-package View;
+package view;
 
-import Model.Item;
-import Model.ItemType;
+import model.ItemType;
 
 import javax.swing.*;
-
 import java.awt.*;
 
-import static Control.DataList.*;
+import static control.DataList.*;
 
 /**
  * Created by Алена on 28.11.2017.
@@ -78,7 +76,7 @@ public class Panes {
 
     //public static final JList<Object> LIST_ITEMS_WITHOUT_PERSONE = new JList<>();
 
-    public Panes(){
+    public Panes() {
         openPane = new JPanel();
         createEventPane = new JPanel();
         createItemPane = new JPanel();
@@ -103,15 +101,15 @@ public class Panes {
         addItemToPersonePane.add(LIST_ITEMS_WITHOUT_PERSONE);
     }*/
 
-    private void setAddPersoneToEventPane(){
+    private void setAddPersoneToEventPane() {
         GridBagLayout gbl = new GridBagLayout();
 
         addPersoneToEvent.setLayout(gbl);
-        GridBagConstraints c =  new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.SOUTH;
-        c.fill   = GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.BOTH;
         c.gridheight = 1;
-        c.gridwidth  = 1;
+        c.gridwidth = 1;
         c.gridx = GridBagConstraints.RELATIVE;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
@@ -128,7 +126,7 @@ public class Panes {
         c.gridy = GridBagConstraints.RELATIVE;
         c.gridx = 0;
         c.gridheight = 3;
-        gbl.setConstraints(EVENT_PERSONELIST_LABEL,c);
+        gbl.setConstraints(EVENT_PERSONELIST_LABEL, c);
         addPersoneToEvent.add(EVENT_PERSONELIST_LABEL);
 
         c.gridwidth = 3;
@@ -151,16 +149,16 @@ public class Panes {
         addPersoneToEvent.add(ACTIONS_WITH_PERSONE_AT_EVENT);
     }
 
-    private void setSelectPersonePane(){
+    private void setSelectPersonePane() {
         GridBagLayout gbl = new GridBagLayout();
 
         selectPersonePane.setLayout(gbl);
         //openPane.setSize(500,500);
-        GridBagConstraints c =  new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.SOUTH;
-        c.fill   = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridheight = 1;
-        c.gridwidth  = 2;
+        c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = GridBagConstraints.RELATIVE;
         c.insets = new Insets(0, 0, 0, 0);
@@ -175,26 +173,26 @@ public class Panes {
         selectPersonePane.add(PERSONE_ITEMS_LIST);
 
         c.weighty = 1.0;
-        c.gridheight=2;
+        c.gridheight = 2;
         c.fill = GridBagConstraints.BOTH;
         gbl.setConstraints(ITEMS_AT_PERSONE_SCROLL, c);
         selectPersonePane.add(ITEMS_AT_PERSONE_SCROLL);
 
-        c.gridheight=1;
-        c.gridwidth=1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
 
         c.gridx = GridBagConstraints.RELATIVE;
         c.gridy = 4;
         c.weighty = 0.0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        gbl.setConstraints(ADD_ITEM_TO_PERSONE,c);
+        gbl.setConstraints(ADD_ITEM_TO_PERSONE, c);
         selectPersonePane.add(ADD_ITEM_TO_PERSONE);
 
-        gbl.setConstraints(DELETE_ITEM_AT_PERSONE,c);
+        gbl.setConstraints(DELETE_ITEM_AT_PERSONE, c);
         selectPersonePane.add(DELETE_ITEM_AT_PERSONE);
     }
 
-    private void setCreateEventPane(){
+    private void setCreateEventPane() {
         createEventPane.setLayout(new BoxLayout(createEventPane, BoxLayout.Y_AXIS));
 
         createEventPane.add(NAME_EVENT_LABEL);
@@ -202,7 +200,7 @@ public class Panes {
         createEventPane.add(CREATE_EVENT);
     }
 
-    private void setCreatePersonePane(){
+    private void setCreatePersonePane() {
         createPersonePane.setLayout(new BoxLayout(createPersonePane, BoxLayout.Y_AXIS));
 
         createPersonePane.add(PERSONE_NAME_LABEL);
@@ -212,7 +210,7 @@ public class Panes {
         createPersonePane.add(CREATE_PERSONE);
     }
 
-    private void setCreateItem(){
+    private void setCreateItem() {
         //createItem.setBackground(colorListStuff);
         createItemPane.setLayout(new BoxLayout(createItemPane, BoxLayout.Y_AXIS));
 
@@ -225,7 +223,7 @@ public class Panes {
         createItemPane.add(CREATE_ITEM);
     }
 
-    private void setOpenPane(){
+    private void setOpenPane() {
         openPane.setBackground(Color.white);
 
         /*listStuff.setBackground(colorListStuff);
@@ -256,11 +254,11 @@ public class Panes {
 
         openPane.setLayout(gbl);
         //openPane.setSize(500,500);
-        GridBagConstraints c =  new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.SOUTH;
-        c.fill   = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridheight = 1;
-        c.gridwidth  = 3;
+        c.gridwidth = 3;
         c.gridx = GridBagConstraints.RELATIVE;
         c.gridy = 0;
         c.insets = new Insets(0, 0, 0, 0);
@@ -268,48 +266,48 @@ public class Panes {
         c.ipady = 0;
         c.weightx = 1.0;
         c.weighty = 0.0;
-        gbl.setConstraints(EVENTS_LABEL,c);
+        gbl.setConstraints(EVENTS_LABEL, c);
         openPane.add(EVENTS_LABEL);
 
 
         c.gridx = 3;
-        gbl.setConstraints(PERSONE_LABEL,c);
+        gbl.setConstraints(PERSONE_LABEL, c);
         openPane.add(PERSONE_LABEL);
 
         c.gridx = 6;
-        gbl.setConstraints(ITEM_LABEL,c);
+        gbl.setConstraints(ITEM_LABEL, c);
         openPane.add(ITEM_LABEL);
 
-        c.gridy=1;
+        c.gridy = 1;
         c.gridwidth = 1;
         c.gridx = 0;
-        gbl.setConstraints(ADD_EVENT,c);
+        gbl.setConstraints(ADD_EVENT, c);
         openPane.add(ADD_EVENT);
 
 
         c.gridx = GridBagConstraints.RELATIVE;
-        gbl.setConstraints(DELETE_EVENT,c);
+        gbl.setConstraints(DELETE_EVENT, c);
         openPane.add(DELETE_EVENT);
 
-        gbl.setConstraints(INFO_EVENT,c);
+        gbl.setConstraints(INFO_EVENT, c);
         openPane.add(INFO_EVENT);
 
-        gbl.setConstraints(ADD_PERSONE,c);
+        gbl.setConstraints(ADD_PERSONE, c);
         openPane.add(ADD_PERSONE);
 
-        gbl.setConstraints(DELETE_PERSONE,c);
+        gbl.setConstraints(DELETE_PERSONE, c);
         openPane.add(DELETE_PERSONE);
 
-        gbl.setConstraints(INFO_PERSONE,c);
+        gbl.setConstraints(INFO_PERSONE, c);
         openPane.add(INFO_PERSONE);
 
-        gbl.setConstraints(ADD_ITEM,c);
+        gbl.setConstraints(ADD_ITEM, c);
         openPane.add(ADD_ITEM);
 
-        gbl.setConstraints(DELETE_ITEM,c);
+        gbl.setConstraints(DELETE_ITEM, c);
         openPane.add(DELETE_ITEM);
 
-        gbl.setConstraints(INFO_ITEM,c);
+        gbl.setConstraints(INFO_ITEM, c);
         openPane.add(INFO_ITEM);
 
         c.gridy = 2;
@@ -320,11 +318,11 @@ public class Panes {
         gbl.setConstraints(EVENTS_LIST_SCROLL, c);
         openPane.add(EVENTS_LIST_SCROLL);
 
-        c.gridx=3;
+        c.gridx = 3;
         gbl.setConstraints(PERSONE_LIST_SCROLL, c);
         openPane.add(PERSONE_LIST_SCROLL);
 
-        c.gridx=6;
+        c.gridx = 6;
         gbl.setConstraints(ITEMS_LIST_SCROLL, c);
         openPane.add(ITEMS_LIST_SCROLL);
     }

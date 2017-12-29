@@ -1,14 +1,13 @@
-package Control;
+package control;
 
-import Model.Event;
-import Model.Item;
-import Model.Person;
+import model.Event;
+import model.Item;
+import model.Person;
 
-import javax.xml.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.SortedSet;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.TreeSet;
 
 
@@ -34,33 +33,33 @@ public class DataList {
     public static Item selectedItem = null;
     public static Event selectedEvent = null;
 
-    public static void  setPersoneWithoutEvent(){
+    public static void setPersoneWithoutEvent() {
         personeWithoutEvent.clear();
-        if(!personeList.isEmpty()) {
+        if (!personeList.isEmpty()) {
             Person person = personeList.first();
-            for(int i=0; i!=personeList.size(); i++){
-                if(person.getEvent()==null)
+            for (int i = 0; i != personeList.size(); i++) {
+                if (person.getEvent() == null)
                     personeWithoutEvent.add(person);
-                if(i!=personeList.size()-1)
+                if (i != personeList.size() - 1)
                     person = personeList.higher(person);
             }
         }
     }
 
-    public static void setItemsWithoutPersone(){
+    public static void setItemsWithoutPersone() {
         itemsWithoutPersone.clear();
-        if(!itemsList.isEmpty()) {
+        if (!itemsList.isEmpty()) {
             Item item = itemsList.first();
-            for(int i=0; i!=itemsList.size(); i++){
-                if(item.getPerson()==null)
+            for (int i = 0; i != itemsList.size(); i++) {
+                if (item.getPerson() == null)
                     itemsWithoutPersone.add(item);
-                if(i!=itemsList.size()-1)
+                if (i != itemsList.size() - 1)
                     item = itemsList.higher(item);
             }
         }
     }
 
-    public static void prepareDataToCode(){
+    public static void prepareDataToCode() {
         setPersoneWithoutEvent();
         System.out.println("People without events " + personeWithoutEvent);
         setItemsWithoutPersone();
@@ -73,7 +72,7 @@ public class DataList {
         System.out.println("EventList " + eventList);
     }
 
-    public static void setDecodeData(){
+    public static void setDecodeData() {
         Person person;
         Item item;
         Event event;
@@ -81,40 +80,40 @@ public class DataList {
         eventList.remove(defaultEvent);
         defaultPersone = defaultEvent.getPersonList().first();
         defaultEvent.getPersonList().remove(defaultPersone);
-        if(!eventList.isEmpty()){
+        if (!eventList.isEmpty()) {
             event = eventList.first();
-            for(int i=0; i!=eventList.size(); i++){
-                if(!event.getPersonList().isEmpty()) {
+            for (int i = 0; i != eventList.size(); i++) {
+                if (!event.getPersonList().isEmpty()) {
                     person = event.getPersonList().first();
-                    for(int j=0; j<event.getPersonList().size(); j++){
+                    for (int j = 0; j < event.getPersonList().size(); j++) {
                         person.setEvent(event);
                         personeList.add(person);
                         System.out.println("To event " + event + " added person " + person);
-                        if(!person.getListItems().isEmpty()){
+                        if (!person.getListItems().isEmpty()) {
                             item = person.getListItems().first();
-                            for (int k=0; k<person.getListItems().size(); k++){
+                            for (int k = 0; k < person.getListItems().size(); k++) {
                                 item.setPerson(person);
                                 itemsList.add(item);
                                 System.out.println("To person " + person + " added item " + item);
-                                if(k!=person.getListItems().size()-1)
+                                if (k != person.getListItems().size() - 1)
                                     item = person.getListItems().higher(item);
                             }
                         }
-                        if(j!=event.getPersonList().size()-1)
+                        if (j != event.getPersonList().size() - 1)
                             person = event.getPersonList().higher(person);
                     }
                 }
-                if(i!=eventList.size()-1)
+                if (i != eventList.size() - 1)
                     event = eventList.higher(event);
             }
         }
 
         System.out.println("Default event personList " + defaultEvent.getPersonList());
 
-        if(!defaultEvent.getPersonList().isEmpty()){
+        if (!defaultEvent.getPersonList().isEmpty()) {
             System.out.println("Do actions with default event");
             person = defaultEvent.getPersonList().first();
-            for(int i=0; i!=defaultEvent.getPersonList().size(); i++) {
+            for (int i = 0; i != defaultEvent.getPersonList().size(); i++) {
                 personeList.add(person);
                 System.out.println("Person " + person + " added as default");
                 if (!person.getListItems().isEmpty()) {
@@ -127,19 +126,19 @@ public class DataList {
                             item = person.getListItems().higher(item);
                     }
                 }
-                if(i!=defaultEvent.getPersonList().size()-1)
+                if (i != defaultEvent.getPersonList().size() - 1)
                     person = defaultEvent.getPersonList().higher(person);
             }
         }
         defaultEvent.getPersonList().clear();
 
-        if(!defaultPersone.getListItems().isEmpty()) {
+        if (!defaultPersone.getListItems().isEmpty()) {
             System.out.println("Do actions with default person");
             item = defaultPersone.getListItems().first();
-            for(int i=0; i!=defaultPersone.getListItems().size(); i++){
+            for (int i = 0; i != defaultPersone.getListItems().size(); i++) {
                 itemsList.add(item);
                 System.out.println("Item " + item + " added as default");
-                if(i!=defaultPersone.getListItems().size()-1)
+                if (i != defaultPersone.getListItems().size() - 1)
                     item = defaultPersone.getListItems().higher(item);
             }
         }

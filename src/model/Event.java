@@ -1,14 +1,16 @@
-package Model;
+package model;
 
-import javax.xml.bind.annotation.*;
-
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 import java.util.TreeSet;
 
 /**
  * Created by Алена on 28.11.2017.
  */
-@XmlType(propOrder = {"name","personList"})
+@XmlType(propOrder = {"name", "personList"})
 public class Event implements Comparable<Event> {
     private String name;
 
@@ -48,17 +50,17 @@ public class Event implements Comparable<Event> {
         this.name = name;
     }
 
-    public void addPersone(Person persone){
+    public void addPersone(Person persone) {
         personList.add(persone);
     }
 
-    public void removePersone(Person person){
+    public void removePersone(Person person) {
         personList.remove(person);
     }
 
-    public void clearEvent(){
+    public void clearEvent() {
         Person person;
-        while(personList.size()!=0){
+        while (personList.size() != 0) {
             person = personList.first();
             person.removeEvent();
             removePersone(person);
@@ -67,9 +69,9 @@ public class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(Event event) {
-        if(getName().compareTo(event.getName())>0)
+        if (getName().compareTo(event.getName()) > 0)
             return 1;
-        else if(getName().compareTo(event.getName())<0)
+        else if (getName().compareTo(event.getName()) < 0)
             return -1;
         else
             return 0;
@@ -82,8 +84,8 @@ public class Event implements Comparable<Event> {
 
         Event event = (Event) o;
 
-        if (getName() != null ? !getName().equals(event.getName()) : event.getName() != null) return false;
-        return getPersonList() != null ? getPersonList().equals(event.getPersonList()) : event.getPersonList() == null;
+        return Objects.equals(getName(), event.getName()) &&
+                Objects.equals(getPersonList(), event.getPersonList());
     }
 
     @Override
@@ -100,7 +102,7 @@ public class Event implements Comparable<Event> {
         return s.toString();
     }
 
-    public String info(){
+    public String info() {
         StringBuffer s = new StringBuffer();
         s.append(name).append(" ").append(personList.toString());
         return s.toString();

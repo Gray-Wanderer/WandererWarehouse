@@ -1,16 +1,16 @@
-package Control;
+package control;
 
-import Model.Item;
+import model.Item;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-import static Control.DataList.*;
-import static View.Panes.*;
+import static control.DataList.*;
+import static view.Panes.ITEMS_AT_PERSONE;
 
 /**
  * Created by Алена on 29.11.2017.
@@ -22,45 +22,15 @@ public class AddItemToPersone implements ActionListener {
         JFrame addItem = new JFrame();
         addItem.setTitle("Выберете снаряжение");
 
-        addItem.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-
-            }
-
+        addItem.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 addItem.dispose();
             }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
         });
 
-        addItem.setPreferredSize(new Dimension(300,100));
-        addItem.setSize(300,100);
+        addItem.setPreferredSize(new Dimension(300, 100));
+        addItem.setSize(300, 100);
         addItem.pack();
         addItem.setLocationRelativeTo(null);
         //addItem.setContentPane(addItem.getContentPane()); //панель - статическое поле в классе Panes
@@ -74,7 +44,7 @@ public class AddItemToPersone implements ActionListener {
         addItem.setVisible(true);
     }
 
-    private void addActions(Container contentPane){
+    private void addActions(Container contentPane) {
         JList<Object> listItemsWithoutPersone = new JList<>(itemsWithoutPersone.toArray());
         contentPane.setLayout(new GridLayout());
         contentPane.add(listItemsWithoutPersone);
@@ -84,10 +54,10 @@ public class AddItemToPersone implements ActionListener {
         listItemsWithoutPersone.addListSelectionListener(e -> {  //ЛЯМБДА
             System.out.println("Item selected");
             //LIST_ITEMS_WITHOUT_PERSONE.clearSelection();
-            if(!e.getValueIsAdjusting()) {  //что-то произойдет только если есть выбранное значение в событии
+            if (!e.getValueIsAdjusting()) {  //что-то произойдет только если есть выбранное значение в событии
                 System.out.println("Adding item to persone");
                 selectedItem = (Item) listItemsWithoutPersone.getSelectedValue();
-                System.out.println("Selected item "+selectedItem);
+                System.out.println("Selected item " + selectedItem);
                 selectedPersone.setItem(selectedItem);
                 selectedItem.setPerson(selectedPersone);
                 System.out.println("Person itemsList " + selectedPersone.getListItems());

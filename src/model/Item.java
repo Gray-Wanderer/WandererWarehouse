@@ -1,16 +1,14 @@
-package Model;
+package model;
 
-import javax.xml.bind.annotation.*;
-import javax.xml.crypto.Data;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 /**
  * Created by Алена on 28.11.2017.
  */
 //@XmlRootElement(name = "Item")
-@XmlType(propOrder = {"type","maker","name"})
+@XmlType(propOrder = {"type", "maker", "name"})
 public class Item implements Comparable<Item> {
     //@XmlElement(name = "type")
     private ItemType type;
@@ -25,7 +23,7 @@ public class Item implements Comparable<Item> {
     private GroupItems group;
     //private Calendar dateRemove;
 
-    public Item(){
+    public Item() {
         type = ItemType.None;
         maker = "";
         name = "";
@@ -98,9 +96,9 @@ public class Item implements Comparable<Item> {
 
     @Override
     public int compareTo(Item item) {
-        if(getType().compareTo(item.getType())>0)
+        if (getType().compareTo(item.getType()) > 0)
             return 1;
-        else if(getType().compareTo(item.getType())<0)
+        else if (getType().compareTo(item.getType()) < 0)
             return -1;
         else
             return getName().compareTo(item.getName());
@@ -113,21 +111,21 @@ public class Item implements Comparable<Item> {
         return s.toString();
     }
 
-    public String info(){
+    public String info() {
         StringBuffer s = new StringBuffer();
         s.append("Equip info:\n").append(type).append(" ").append(maker).append(" ").append(name).append("\n");
         s.append("At persone: ");
-        if(person!=null)
+        if (person != null)
             s.append(person.toString()).append("\n");
         else
             s.append("none").append("\n");
         return s.toString();
     }
 
-    public void clearItem(){
-        if(person!=null)
+    public void clearItem() {
+        if (person != null)
             person.removeItem(this);
-        if(group!=null)
+        if (group != null)
             group.removeItem(this);
         event = null;
     }
@@ -139,11 +137,11 @@ public class Item implements Comparable<Item> {
 
         Item item = (Item) o;
 
-        if (name != item.name) return false;
-        if (getType() != item.getType()) return false;
-        if (getMaker() != null ? !getMaker().equals(item.getMaker()) : item.getMaker() != null) return false;
-        if (getPerson() != null ? !getPerson().equals(item.getPerson()) : item.getPerson() != null) return false;
-        return getEvent() != null ? getEvent().equals(item.getEvent()) : item.getEvent() == null;
+        return Objects.equals(name, item.name) &&
+                Objects.equals(getType(), item.getType()) &&
+                Objects.equals(getMaker(), item.getMaker()) &&
+                Objects.equals(getPerson(), item.getPerson()) &&
+                Objects.equals(getEvent(), item.getEvent());
     }
 
     @Override
