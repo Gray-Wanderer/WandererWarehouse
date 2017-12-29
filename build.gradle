@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+idea {
+    module {
+        sourceDirs += file('src')
+        //testSourceDirs += file('tests')
+        excludeDirs += file('deploy')
+        excludeDirs += file('build')
+        jdkName = '1.8'
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'view.OpenFrame'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        // resources {
+        //     srcDirs = ['resources']
+        // }
+    }
+}
+
+jar {
+    baseName = 'warehouseOrigin'
+    version =  '0.1.0'
+    manifest {
+        attributes (
+                'Main-Class': 'view.OpenFrame',
+                'Class-Path': configurations.compile.collect { 'dependencies/' + it.getName() }.join(' ')
+        )
+    }
+}
+
+task copyDependencies(type: Copy) {
+    from configurations.compile
+    into "$buildDir/libs/dependencies"
+}
+
+build.dependsOn(copyDependencies)
