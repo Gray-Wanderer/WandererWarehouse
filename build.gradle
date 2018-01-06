@@ -9,9 +9,11 @@ repositories {
 idea {
     module {
         sourceDirs += file('src')
-        //testSourceDirs += file('tests')
+        testSourceDirs += file('tests')
         excludeDirs += file('deploy')
         excludeDirs += file('build')
+        excludeDirs += file('fileTemplates')
+        excludeDirs += file('data')
         jdkName = '1.8'
         downloadJavadoc = true
         downloadSources = true
@@ -20,8 +22,18 @@ idea {
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+compileJava {
+    options.compilerArgs += ["-XDignore.symbol.file", "-Xdoclint:none", "-Xlint:none", "-nowarn"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+    options.encoding = "UTF-8"
+}
 
-mainClassName = 'view.OpenFrame'
+mainClassName = 'main.view.OpenFrame'
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
 
 sourceSets {
     main {
@@ -32,14 +44,19 @@ sourceSets {
         //     srcDirs = ['resources']
         // }
     }
+    test {
+        java {
+            srcDirs = ['tests']
+        }
+    }
 }
 
 jar {
-    baseName = 'warehouseOrigin'
-    version =  '0.1.0'
+    baseName = 'warehouseWanderer'
+    version = '0.1.0'
     manifest {
-        attributes (
-                'Main-Class': 'view.OpenFrame',
+        attributes(
+                'Main-Class': 'main.view.OpenFrame',
                 'Class-Path': configurations.compile.collect { 'dependencies/' + it.getName() }.join(' ')
         )
     }
@@ -50,4 +67,4 @@ task copyDependencies(type: Copy) {
     into "$buildDir/libs/dependencies"
 }
 
-build.dependsOn(copyDependencies)
+build.dependsOn test, copyDependencies

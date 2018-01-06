@@ -1,6 +1,8 @@
 .gradle/
-deploy/
-build/
+/deploy/
+/build/
 *.ipr
 *.iml
 *.iws
+/fileTemplates/
+/data/
