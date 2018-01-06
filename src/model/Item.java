@@ -1,5 +1,8 @@
 package model;
 
+import data.DataItem;
+
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
@@ -8,8 +11,8 @@ import java.util.Objects;
  * Created by Алена on 28.11.2017.
  */
 //@XmlRootElement(name = "Item")
-@XmlType(propOrder = {"type", "maker", "name"})
-public class Item implements Comparable<Item> {
+@XmlType(propOrder = {"id", "type", "maker", "name", "personId"})
+public class Item extends DataItem<String> implements Comparable<Item> {
     //@XmlElement(name = "type")
     private ItemType type;
     //@XmlElement(name = "maker")
@@ -21,6 +24,7 @@ public class Item implements Comparable<Item> {
     //@XmlElement(name = "event")
     private Event event;
     private GroupItems group;
+    private String personId;
     //private Calendar dateRemove;
 
     public Item() {
@@ -41,6 +45,12 @@ public class Item implements Comparable<Item> {
         event = null;
         group = null;
         //dateRemove = null;
+    }
+
+    @Override
+    @XmlElement
+    public String getId() {
+        return getName();
     }
 
     public ItemType getType() {
@@ -92,6 +102,14 @@ public class Item implements Comparable<Item> {
 
     public void setGroup(GroupItems group) {
         this.group = group;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 
     @Override

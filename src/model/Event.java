@@ -1,5 +1,7 @@
 package model;
 
+import data.DataItem;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -10,8 +12,8 @@ import java.util.TreeSet;
 /**
  * Created by Алена on 28.11.2017.
  */
-@XmlType(propOrder = {"name", "personList"})
-public class Event implements Comparable<Event> {
+@XmlType(propOrder = {"id", "name", "personList"})
+public class Event extends DataItem<String> implements Comparable<Event> {
     private String name;
 
     @XmlElementWrapper(name = "listPersone")
@@ -31,6 +33,12 @@ public class Event implements Comparable<Event> {
     public Event(String name, TreeSet<Person> personList) {
         this.name = name;
         this.personList = personList;
+    }
+
+    @Override
+    @XmlElement
+    public String getId() {
+        return getName();
     }
 
     @XmlTransient
