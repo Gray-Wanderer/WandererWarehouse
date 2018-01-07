@@ -1,6 +1,6 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
-import data.DataItem;
+import model.DataItem;
 import model.Event;
 import model.Item;
 import model.Person;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public interface StorageStrategy {
 

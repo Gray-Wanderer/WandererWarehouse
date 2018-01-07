@@ -1,53 +1,21 @@
 package model;
 
-import data.DataItem;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
-import java.util.TreeSet;
 
 /**
  * Created by Алена on 28.11.2017.
  */
-@XmlType(propOrder = {"id", "name", "personList"})
-public class Event extends DataItem<String> implements Comparable<Event> {
+@XmlType(propOrder = {"name"})
+public class Event extends DataItem implements Comparable<Event> {
     private String name;
 
-    @XmlElementWrapper(name = "listPersone")
-    @XmlElement(name = "persone")
-    private TreeSet<Person> personList;
-
     public Event() {
-        personList = new TreeSet<>();
         name = "";
     }
 
     public Event(String name) {
         this.name = name;
-        personList = new TreeSet<>();
-    }
-
-    public Event(String name, TreeSet<Person> personList) {
-        this.name = name;
-        this.personList = personList;
-    }
-
-    @Override
-    @XmlElement
-    public String getId() {
-        return getName();
-    }
-
-    @XmlTransient
-    public TreeSet<Person> getPersonList() {
-        return personList;
-    }
-
-    public void setPersonList(TreeSet<Person> personList) {
-        this.personList = personList;
     }
 
     public String getName() {
@@ -56,23 +24,6 @@ public class Event extends DataItem<String> implements Comparable<Event> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void addPersone(Person persone) {
-        personList.add(persone);
-    }
-
-    public void removePersone(Person person) {
-        personList.remove(person);
-    }
-
-    public void clearEvent() {
-        Person person;
-        while (personList.size() != 0) {
-            person = personList.first();
-            person.removeEvent();
-            removePersone(person);
-        }
     }
 
     @Override
@@ -92,14 +43,14 @@ public class Event extends DataItem<String> implements Comparable<Event> {
 
         Event event = (Event) o;
 
-        return Objects.equals(getName(), event.getName()) &&
-                Objects.equals(getPersonList(), event.getPersonList());
+        return Objects.equals(getId(), event.getId()) &&
+                Objects.equals(getName(), event.getName());
     }
 
     @Override
     public int hashCode() {
         int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getPersonList() != null ? getPersonList().hashCode() : 0);
+        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
         return result;
     }
 
@@ -111,8 +62,6 @@ public class Event extends DataItem<String> implements Comparable<Event> {
     }
 
     public String info() {
-        StringBuffer s = new StringBuffer();
-        s.append(name).append(" ").append(personList.toString());
-        return s.toString();
+        return name;
     }
 }

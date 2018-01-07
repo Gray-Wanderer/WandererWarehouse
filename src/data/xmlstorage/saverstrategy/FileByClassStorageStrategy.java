@@ -1,8 +1,8 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
 import com.sun.istack.internal.NotNull;
-import data.DataItem;
-import data.xmldao.XmlWarehouseDaoException;
+import model.DataItem;
+import data.xmlstorage.XmlWarehouseDaoException;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public class FileByClassStorageStrategy extends AbstractStorageStrategy {
 
@@ -24,8 +24,11 @@ public class FileByClassStorageStrategy extends AbstractStorageStrategy {
         for (Class<? extends DataItem> dataClass : DATA_CLASSES) {
             saveDataClass(new Wrapper(data.get(dataClass).values()),
                     getTmpFilename(dataClass),
-                    getFilename(dataClass),
                     Wrapper.class, dataClass);
+        }
+
+        for (Class<? extends DataItem> dataClass : DATA_CLASSES) {
+            removeTmpData(getTmpFilename(dataClass), getFilename(dataClass));
         }
     }
 

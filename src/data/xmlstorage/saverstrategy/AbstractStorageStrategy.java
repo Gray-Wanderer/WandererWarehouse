@@ -1,7 +1,7 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
-import data.DataItem;
-import data.xmldao.XmlWarehouseDaoException;
+import model.DataItem;
+import data.xmlstorage.XmlWarehouseDaoException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -16,17 +16,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public abstract class AbstractStorageStrategy implements StorageStrategy {
 
     protected static final String DATA_DIRECTORY = "data";
     protected static final String TMP_FILE_PREFIX = "_";
 
-    protected void saveDataClass(Wrapper wrapper, String tmpFileName, String fileName, Class... classesForJAXB) {
+    protected void saveDataClass(Wrapper wrapper, String tmpFileName, Class... classesForJAXB) {
         createDataDirectoryIfNotExists();
 
         File tmpFile = new File(tmpFileName);
+
+        if (tmpFile.exists() && !tmpFile.delete()) {
+            throw new XmlWarehouseDaoException("Can't delete dile '" + tmpFileName + "'");
+        }
 
         if (wrapper.getItems().isEmpty())
             return;
@@ -49,7 +53,9 @@ public abstract class AbstractStorageStrategy implements StorageStrategy {
         } catch (JAXBException e) {
             throw new XmlWarehouseDaoException(tmpFileName + " parsing error", e);
         }
+    }
 
+    protected void removeTmpData(String tmpFileName, String fileName) {
         clearDataFile(fileName);
         renameFile(tmpFileName, fileName);
     }
@@ -71,13 +77,15 @@ public abstract class AbstractStorageStrategy implements StorageStrategy {
     }
 
     private void renameFile(String oldFileName, String newFileName) {
+        File oldFile = new File(oldFileName);
+        if (!oldFile.exists())
+            return;
+
         File newFile = new File(newFileName);
 
         if (newFile.exists()) {
             throw new XmlWarehouseDaoException("Can't save new database file '" + oldFileName + "'");
         }
-
-        File oldFile = new File(oldFileName);
 
         boolean renamed = oldFile.renameTo(newFile);
 

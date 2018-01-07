@@ -1,33 +1,32 @@
 package data;
 
 import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import model.DataItem;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
- * @author Gray_Wanderer on 05.01.2018.
+ * @author Gray-Wanderer on 07.01.2018.
  */
-public interface WarehouseDao {
+public interface WarehouseDao<T extends DataItem> {
 
-    void init(@Nullable Map<String, Object> params);
+    void init(WarehouseStorage storage);
 
-    void addItem(@NotNull DataItem dataItem) throws DaoException;
+    void addItem(@NotNull T dataItem) throws DaoException;
 
-    void updateItem(@NotNull Object oldId, @NotNull DataItem dataItem) throws DaoException;
-
-    @NotNull
-    <T extends DataItem> Optional<T> getItem(@NotNull Object id, @NotNull Class<T> objClass) throws DaoException;
-
-    void deleteItem(@NotNull DataItem dataItem) throws DaoException;
-
-    void deleteItem(@NotNull Object id, @NotNull Class<? extends DataItem> objClass) throws DaoException;
+    void updateItem(@NotNull T dataItem) throws DaoException;
 
     @NotNull
-    <T extends DataItem> List<T> getRelativeItems(@NotNull Object id, @NotNull String relativePropertyName, @NotNull Class<T> objClass) throws DaoException;
+    Optional<T> getItem(@NotNull UUID id) throws DaoException;
 
-    void end();
+    Collection<T> getAllItems() throws DaoException;
+
+    boolean isItemExists(@NotNull UUID id) throws DaoException;
+
+    void deleteItem(@NotNull T dataItem) throws DaoException;
+
+    void deleteItemById(@NotNull UUID id) throws DaoException;
 
 }

@@ -1,8 +1,8 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
 import com.sun.istack.internal.NotNull;
-import data.DataItem;
-import data.xmldao.XmlWarehouseDaoException;
+import model.DataItem;
+import data.xmlstorage.XmlWarehouseDaoException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public class XmlHelper {
 

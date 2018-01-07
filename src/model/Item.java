@@ -1,38 +1,35 @@
 package model;
 
-import data.DataItem;
+import data.DaoException;
+import data.PersonDao;
+import view.OpenFrame;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by Алена on 28.11.2017.
  */
 //@XmlRootElement(name = "Item")
-@XmlType(propOrder = {"id", "type", "maker", "name", "personId"})
-public class Item extends DataItem<String> implements Comparable<Item> {
+@XmlType(propOrder = {"type", "maker", "name", "personId"})
+public class Item extends DataItem implements Comparable<Item> {
     //@XmlElement(name = "type")
     private ItemType type;
     //@XmlElement(name = "maker")
     private String maker;
     //@XmlElement(name = "nameItem")
     private String name;
-    //@XmlElement(name = "persone")
-    private Person person;
     //@XmlElement(name = "event")
-    private Event event;
     private GroupItems group;
-    private String personId;
+    private UUID personId;
     //private Calendar dateRemove;
 
     public Item() {
         type = ItemType.None;
         maker = "";
         name = "";
-        person = null;
-        event = null;
         group = null;
         //dateRemove = null;
     }
@@ -41,16 +38,8 @@ public class Item extends DataItem<String> implements Comparable<Item> {
         this.type = type;
         this.maker = maker;
         this.name = name;
-        person = null;
-        event = null;
         group = null;
         //dateRemove = null;
-    }
-
-    @Override
-    @XmlElement
-    public String getId() {
-        return getName();
     }
 
     public ItemType getType() {
@@ -67,24 +56,6 @@ public class Item extends DataItem<String> implements Comparable<Item> {
 
     public void setMaker(String maker) {
         this.maker = maker;
-    }
-
-    @XmlTransient
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    @XmlTransient
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
     }
 
     public String getName() {
@@ -104,11 +75,11 @@ public class Item extends DataItem<String> implements Comparable<Item> {
         this.group = group;
     }
 
-    public String getPersonId() {
+    public UUID getPersonId() {
         return personId;
     }
 
-    public void setPersonId(String personId) {
+    public void setPersonId(UUID personId) {
         this.personId = personId;
     }
 
@@ -129,23 +100,17 @@ public class Item extends DataItem<String> implements Comparable<Item> {
         return s.toString();
     }
 
-    public String info() {
+    public String info() throws DaoException {
         StringBuffer s = new StringBuffer();
         s.append("Equip info:\n").append(type).append(" ").append(maker).append(" ").append(name).append("\n");
         s.append("At persone: ");
-        if (person != null)
-            s.append(person.toString()).append("\n");
-        else
-            s.append("none").append("\n");
+        if (personId != null) {
+            PersonDao personDao = OpenFrame.getDao(PersonDao.class);
+            s.append(personDao.getItem(personId).map(Person::toString).orElseThrow(() -> new DaoException("Person is not found"))).append("\n");
+        } else {
+            s.append("none");
+        }
         return s.toString();
-    }
-
-    public void clearItem() {
-        if (person != null)
-            person.removeItem(this);
-        if (group != null)
-            group.removeItem(this);
-        event = null;
     }
 
     @Override
@@ -155,20 +120,20 @@ public class Item extends DataItem<String> implements Comparable<Item> {
 
         Item item = (Item) o;
 
-        return Objects.equals(name, item.name) &&
+        return Objects.equals(getId(), item.getId()) &&
+                Objects.equals(name, item.name) &&
                 Objects.equals(getType(), item.getType()) &&
                 Objects.equals(getMaker(), item.getMaker()) &&
-                Objects.equals(getPerson(), item.getPerson()) &&
-                Objects.equals(getEvent(), item.getEvent());
+                Objects.equals(getPersonId(), item.getPersonId());
     }
 
     @Override
     public int hashCode() {
         int result = getType() != null ? getType().hashCode() : 0;
         result = 31 * result + (getMaker() != null ? getMaker().hashCode() : 0);
-        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
-        result = 31 * result + (getEvent() != null ? getEvent().hashCode() : 0);
+        result = 31 * result + (getPersonId() != null ? getPersonId().hashCode() : 0);
         result = 31 * result + name.hashCode();
+        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
         return result;
     }
 }
