@@ -1,6 +1,6 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
-import data.DataItem;
+import model.DataItem;
 import model.Event;
 import model.Item;
 import model.Person;
@@ -9,9 +9,10 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public class TestStorageStrategy {
 
@@ -56,7 +57,7 @@ public class TestStorageStrategy {
             Item item = new Item();
             item.setMaker("marker");
             item.setName("Item name " + i);
-            item.setPersonId("Test Person " + i);
+            item.setPersonId(UUID.randomUUID());
             putDataItemToMap(testData, item);
         }
 
@@ -64,7 +65,7 @@ public class TestStorageStrategy {
             Person person = new Person();
             person.setName("Person " + i);
             person.setSurname("Test");
-            person.setEventId("Test event " + i);
+            person.setEventId(UUID.randomUUID());
             putDataItemToMap(testData, person);
         }
 
