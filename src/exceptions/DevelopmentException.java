@@ -1,7 +1,7 @@
 package exceptions;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public class DevelopmentException extends RuntimeException {
 

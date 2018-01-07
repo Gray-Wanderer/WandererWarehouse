@@ -1,13 +1,13 @@
-package data.xmldao;
+package data.xmlstorage;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import data.DaoException;
-import data.DataItem;
-import data.WarehouseDao;
-import data.xmldao.saverstrategy.FileByClassStorageStrategy;
-import data.xmldao.saverstrategy.SingleFileStorageStrategy;
-import data.xmldao.saverstrategy.StorageStrategy;
+import model.DataItem;
+import data.WarehouseStorage;
+import data.xmlstorage.saverstrategy.FileByClassStorageStrategy;
+import data.xmlstorage.saverstrategy.SingleFileStorageStrategy;
+import data.xmlstorage.saverstrategy.StorageStrategy;
 import exceptions.DevelopmentException;
 
 import java.lang.reflect.Field;
@@ -18,9 +18,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * @author Gray_Wanderer on 05.01.2018.
+ * @author Gray-Wanderer on 05.01.2018.
  */
-public class XmlWarehouseDao implements WarehouseDao {
+public class XmlWarehouseStorage implements WarehouseStorage {
 
     public static String MULTI_FILE_STORAGE_STRATEGY = "MULTI_FILE_STORAGE_STRATEGY";
 
@@ -54,48 +54,67 @@ public class XmlWarehouseDao implements WarehouseDao {
     public void addItem(@NotNull DataItem dataItem) throws DaoException {
         Map<Object, DataItem> objects = inMemoryBase.computeIfAbsent(dataItem.getClass(), k -> new HashMap<>());
 
-        if (objects.containsKey(dataItem.getId()))
-            throw new DaoException(dataItem.getClass().getSimpleName() + " with id '" + dataItem.getId() + "' already exists!");
+        if (dataItem.getId() != null) {
+            if (objects.containsKey(dataItem.getId())) {
+                throw new DaoException(dataItem.getClass().getSimpleName() + " with id '" + dataItem.getId() + "' already exists!");
+            }
+        } else {
+            UUID newId = UUID.randomUUID();
+            while (objects.containsKey(newId)) {
+                newId = UUID.randomUUID();
+            }
+            dataItem.setId(newId);
+        }
 
         objects.put(dataItem.getId(), getClonedItem(dataItem));
     }
 
-    private DataItem getClonedItem(@Nullable DataItem item) {
-        if (item == null)
-            return null;
-        try {
-            return item.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new XmlWarehouseDaoException("Clone object error: " + item.getClass().getSimpleName(), e);
-        }
-    }
-
     @Override
-    public void updateItem(Object oldId, DataItem dataItem) throws DaoException {
-        if (oldId != dataItem.getId()) {
-            if (getItem(dataItem.getId(), dataItem.getClass()).isPresent())
-                throw new DaoException(dataItem.getClass().getSimpleName() + " with id '" + dataItem.getId() + "' already exists!");
+    public void updateItem(DataItem dataItem) throws DaoException {
+        if (dataItem == null)
+            throw new DevelopmentException("Can't update null element");
+
+        if (!isItemExists(dataItem.getId(), dataItem.getClass())) {
+            throw new DaoException(dataItem.getClass().getSimpleName() + " with id '" + dataItem.getId() + "' is not exists");
         }
-        deleteItem(oldId, dataItem.getClass());
+        deleteItemById(dataItem.getId(), dataItem.getClass());
         addItem(dataItem);
     }
 
     @Override
     @NotNull
     @SuppressWarnings("unchecked")
-    public <T extends DataItem> Optional<T> getItem(@NotNull Object id, @NotNull Class<T> objClass) {
+    public <T extends DataItem> Optional<T> getItem(Object id, @NotNull Class<T> objClass) {
+        if (id == null)
+            throw new DevelopmentException("Id must be not null");
+        if (objClass == null)
+            throw new DevelopmentException("Class must be not null");
+
         Map<Object, DataItem> objects = inMemoryBase.get(objClass);
 
         return Optional.ofNullable(objects == null ? null : (T) getClonedItem(objects.get(id)));
     }
 
     @Override
-    public void deleteItem(@NotNull DataItem dataItem) {
-        deleteItem(dataItem.getId(), dataItem.getClass());
+    @SuppressWarnings("unchecked")
+    public <T extends DataItem> Collection<T> getAllItems(Class<T> objClass) {
+        return inMemoryBase.get(objClass).values().stream()
+                .map(o -> (T) getClonedItem(o))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteItem(@NotNull Object id, @NotNull Class<? extends DataItem> objClass) {
+    public boolean isItemExists(Object id, Class<? extends DataItem> objClass) {
+        return getItem(id, objClass).isPresent();
+    }
+
+    @Override
+    public void deleteItem(@NotNull DataItem dataItem) {
+        deleteItemById(dataItem.getId(), dataItem.getClass());
+    }
+
+    @Override
+    public void deleteItemById(@NotNull Object id, @NotNull Class<? extends DataItem> objClass) {
         Map<Object, DataItem> objects = inMemoryBase.get(objClass);
 
         if (objects != null) {
@@ -105,7 +124,7 @@ public class XmlWarehouseDao implements WarehouseDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends DataItem> List<T> getRelativeItems(Object id, String relativePropertyName, Class<T> objClass) {
+    public <T extends DataItem> List<T> getDependentItems(Object id, String relativePropertyName, Class<T> objClass) {
         Map<Object, DataItem> objects = inMemoryBase.get(objClass);
 
         if (objects == null)
@@ -117,6 +136,17 @@ public class XmlWarehouseDao implements WarehouseDao {
                 .filter(item -> filter.apply((T) item, id))
                 .map(item -> (T) getClonedItem(item))
                 .collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends DataItem> T getClonedItem(@Nullable T item) {
+        if (item == null)
+            return null;
+        try {
+            return (T) item.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new XmlWarehouseDaoException("Clone object error: " + item.getClass().getSimpleName(), e);
+        }
     }
 
     private <T> BiFunction<T, Object, Boolean> getFieldResolverFunction(String fieldName, Class<T> itemClass) {
@@ -146,6 +176,11 @@ public class XmlWarehouseDao implements WarehouseDao {
         } catch (NoSuchMethodException e) {
             throw new DevelopmentException("'" + fieldName + "' field or getter is not found in class " + itemClass.getSimpleName());
         }
+    }
+
+    @Override
+    public void clearAllData() {
+        storageStrategy.clearAllData();
     }
 
     @Override

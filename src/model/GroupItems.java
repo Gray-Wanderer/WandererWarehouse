@@ -40,14 +40,6 @@ public class GroupItems implements Comparable<GroupItems> {
         itemsList.remove(item);
     }
 
-    public void clear() {
-        Item item;
-        while (itemsList.size() != 0) {
-            item = itemsList.first();
-            item.clearItem();
-            removeItem(item);
-        }
-    }
 
     @Override
     public int compareTo(GroupItems o) {

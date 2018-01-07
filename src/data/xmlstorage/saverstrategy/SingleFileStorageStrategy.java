@@ -1,7 +1,7 @@
-package data.xmldao.saverstrategy;
+package data.xmlstorage.saverstrategy;
 
-import data.DataItem;
-import data.xmldao.XmlWarehouseDaoException;
+import model.DataItem;
+import data.xmlstorage.XmlWarehouseDaoException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Gray_Wanderer on 06.01.2018.
+ * @author Gray-Wanderer on 06.01.2018.
  */
 public class SingleFileStorageStrategy extends AbstractStorageStrategy {
 
@@ -29,7 +29,8 @@ public class SingleFileStorageStrategy extends AbstractStorageStrategy {
             wrapper.getItems().addAll(data.get(dataClass).values());
         }
 
-        saveDataClass(wrapper, getTmpFileName(), getFileName(), getClassesForJAXB());
+        saveDataClass(wrapper, getTmpFileName(), getClassesForJAXB());
+        removeTmpData(getTmpFileName(), getFileName());
     }
 
     private String getFileName() {
