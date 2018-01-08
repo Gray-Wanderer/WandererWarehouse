@@ -1,64 +1,52 @@
 package view;
 
 import control.*;
-import model.Event;
-import model.Item;
-import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 
-import static control.DataList.*;
-import static model.DataAdapter.codeXML;
-import static model.DataAdapter.decodeXML;
 import static view.Panes.*;
 
 /**
  * Created by Алена on 28.11.2017.
  */
 public class OpenFrame extends JFrame {
-    private static File file = new File("Warehouse.xml");
-    private CreateItem createItem = new CreateItem();  //объекты слушателей событий действия
-    private CreatePersone createPersone = new CreatePersone();
-    private CreateEvent createEvent = new CreateEvent();
+    private CreateItem createItem;  //объекты слушателей событий действия
+    private CreatePersone createPersone;
+    private CreateEvent createEvent;
     private InfoPersone infoPersone;
-    private AddItemToPersone addItemToPersone = new AddItemToPersone(); //слушатель события нажатия на кнопку "Выдать"
-    private InfoItem infoItem = new InfoItem();
-    private DeleteItem deleteItem = new DeleteItem();
-    private DeletePersone deletePersone = new DeletePersone();
-    private InfoEvent infoEvent = new InfoEvent();
-    private AddPersoneToEvent addPersoneToEvent = new AddPersoneToEvent();
-    private DeleteItemAtPersone deleteItemAtPersone = new DeleteItemAtPersone();
-    private DeletePersoneAtEvent deletePersoneAtEvent = new DeletePersoneAtEvent();
-    private DeleteEvent deleteEvent = new DeleteEvent();
+    private AddItemToPersone addItemToPersone; //слушатель события нажатия на кнопку "Выдать"
+    private InfoItem infoItem;
+    private DeleteItem deleteItem;
+    private DeletePersone deletePersone;
+    private InfoEvent infoEvent;
+    private AddPersoneToEvent addPersoneToEvent;
+    private DeleteItemAtPersone deleteItemAtPersone;
+    private DeletePersoneAtEvent deletePersoneAtEvent;
+    private DeleteEvent deleteEvent;
 
-    public static void main(String[] args) {
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            } else
-                decodeXML(file);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        new OpenFrame();
-    }
+    private Panes panes;
 
     public OpenFrame() {
         super();
 
-        setTitle("Warehouse");
+        createItem = new CreateItem();
+        createPersone = new CreatePersone();
+        createEvent = new CreateEvent();
+        addItemToPersone = new AddItemToPersone();
+        infoItem = new InfoItem();
+        deleteItem = new DeleteItem();
+        deletePersone = new DeletePersone();
+        infoEvent = new InfoEvent();
+        addPersoneToEvent = new AddPersoneToEvent();
+        deleteItemAtPersone = new DeleteItemAtPersone();
+        deletePersoneAtEvent = new DeletePersoneAtEvent();
+        deleteEvent = new DeleteEvent();
+    }
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                codeXML(file);
-            }
-        });
+    public void init() {
+
+        setTitle("Warehouse");
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,7 +57,7 @@ public class OpenFrame extends JFrame {
 
         setLocationRelativeTo(null);
 
-        new Panes();
+        panes = new Panes();
 
         setContentPane(openPane); //openPane  - статическое поле класса Panes
 
@@ -102,40 +90,9 @@ public class OpenFrame extends JFrame {
         DELETE_PERSONE_AT_EVENT.addActionListener(deletePersoneAtEvent);
 
         PERSONE_LIST.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //модель выбора - единственный элемент
-        PERSONE_LIST.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                selectedPersone = (Person) PERSONE_LIST.getSelectedValue();
-                System.out.println("Do actions with persone " + selectedPersone.toString());
-                //INFO_PERSONE.addActionListener(infoPersone);
-            }
-        }); //при выборе человека из списка оповещается слушатель события выбора
-
-        ITEMS_LIST.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                selectedItem = (Item) ITEMS_LIST.getSelectedValue();
-                System.out.println("Do actions with item " + selectedItem.toString());
-            }
-        });
-
-        EVENTS_LIST.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting())
-                selectedEvent = (Event) EVENTS_LIST.getSelectedValue();
-        });
 
         ITEMS_AT_PERSONE.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ITEMS_AT_PERSONE.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                selectedItem = (Item) ITEMS_AT_PERSONE.getSelectedValue();
-                System.out.println("Do actions with " + selectedItem.toString());
-            }
-        });
 
         EVENT_PERSONELIST.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        EVENT_PERSONELIST.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                selectedPersone = (Person) EVENT_PERSONELIST.getSelectedValue();
-                System.out.println("Do action with person " + selectedPersone.toString());
-            }
-        });
     }
 }

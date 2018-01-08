@@ -1,30 +1,28 @@
 package view;
 
+import data.DaoException;
+import data.EventDao;
+import data.ItemDao;
+import data.PersonDao;
+import exceptions.DevelopmentException;
+import model.Event;
+import model.Item;
 import model.ItemType;
+import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static control.DataList.*;
+import java.util.Optional;
 
 /**
  * Created by Алена on 28.11.2017.
  */
 public class Panes {
-    public static JPanel openPane;
-    public static JPanel createItemPane;
-    public static JPanel createPersonePane;
-    public static JPanel createEventPane;
-    public static JPanel selectItemPane;
-    public static JPanel selectPersonePane;
-    public static JPanel addItemToPersonePane;
-    public static JPanel addPersoneToEvent;
-
-    public static final JList<Object> ITEMS_LIST = new JList<>(itemsList.toArray());
+    public static final JList<Object> ITEMS_LIST = new JList<>();
     public static final JScrollPane ITEMS_LIST_SCROLL = new JScrollPane(ITEMS_LIST);
-    public static final JList<Object> PERSONE_LIST = new JList<>(personeList.toArray());
+    public static final JList<Object> PERSONE_LIST = new JList<>();
     public static final JScrollPane PERSONE_LIST_SCROLL = new JScrollPane(PERSONE_LIST);
-    public static final JList<Object> EVENTS_LIST = new JList<>(eventList.toArray());
+    public static final JList<Object> EVENTS_LIST = new JList<>();
     public static final JScrollPane EVENTS_LIST_SCROLL = new JScrollPane(EVENTS_LIST);
     public static final JButton ADD_ITEM = new JButton("Add");
     public static final JButton ADD_PERSONE = new JButton("Add");
@@ -38,7 +36,6 @@ public class Panes {
     public static final JLabel ITEM_LABEL = new JLabel("Equipment");
     public static final JLabel PERSONE_LABEL = new JLabel("People");
     public static final JLabel EVENTS_LABEL = new JLabel("Events");
-
     public static final JComboBox<ItemType> BOX_ITEM = new JComboBox<>(ItemType.values());
     public static final JScrollPane BOX_ITEM_SCROLL = new JScrollPane(BOX_ITEM);
     public static final JTextField ITEM_MAKER_TEXTFIELD = new JTextField();
@@ -47,24 +44,20 @@ public class Panes {
     public static final JLabel ITEM_MAKER_LABEL = new JLabel("Maker");
     public static final JLabel ITEM_NUMBER_LABEL = new JLabel("ID");
     public static final JButton CREATE_ITEM = new JButton("Add");
-
     public static final JLabel PERSONE_NAME_LABEL = new JLabel("Name");
     public static final JLabel PERSONE_SURNAME_LABEL = new JLabel("Surname");
     public static final JTextField PERSONE_NAME_TEXTFIELD = new JTextField();
     public static final JTextField PERSONE_SURNAME_TEXTFIELD = new JTextField();
     public static final JButton CREATE_PERSONE = new JButton("Add");
-
     public static final JLabel NAME_EVENT_LABEL = new JLabel("Name");
     public static final JTextField NAME_EVENT_TEXTFIELD = new JTextField();
     public static final JButton CREATE_EVENT = new JButton("Create");
-
     public static final JButton ADD_ITEM_TO_PERSONE = new JButton("Add");
     public static final JButton DELETE_ITEM_AT_PERSONE = new JButton("Remove");
     public static final JLabel PERSONE_EVENT_LABEL = new JLabel("Event: none");
     public static final JLabel PERSONE_ITEMS_LIST = new JLabel("Equipment list");
     public static final JList<Object> ITEMS_AT_PERSONE = new JList<>();
     public static final JScrollPane ITEMS_AT_PERSONE_SCROLL = new JScrollPane(ITEMS_AT_PERSONE);
-
     public static final JLabel EVENT_NAME_LABEL = new JLabel("Name");
     public static final JLabel EVENT_NAME_TEXTFIELD = new JLabel("<event name>");
     public static final JLabel EVENT_PERSONELIST_LABEL = new JLabel("Persone list");
@@ -73,10 +66,26 @@ public class Panes {
     public static final JButton ADD_PERSONE_TO_EVENT = new JButton("Add");
     public static final JButton DELETE_PERSONE_AT_EVENT = new JButton("Delete");
     public static final JButton ACTIONS_WITH_PERSONE_AT_EVENT = new JButton("Actions");
+    public static JPanel openPane;
+    public static JPanel createItemPane;
+    public static JPanel createPersonePane;
+    public static JPanel createEventPane;
+    public static JPanel selectItemPane;
+    public static JPanel selectPersonePane;
+    public static JPanel addItemToPersonePane;
+    public static JPanel addPersoneToEvent;
 
     //public static final JList<Object> LIST_ITEMS_WITHOUT_PERSONE = new JList<>();
 
     public Panes() {
+        try {
+            ITEMS_LIST.setListData(MainApp.getDao(ItemDao.class).getAllItems().toArray());
+            PERSONE_LIST.setListData(MainApp.getDao(PersonDao.class).getAllItems().toArray());
+            EVENTS_LIST.setListData(MainApp.getDao(EventDao.class).getAllItems().toArray());
+        } catch (DaoException e) {
+            throw new DevelopmentException("Can't initialize data");
+        }
+
         openPane = new JPanel();
         createEventPane = new JPanel();
         createItemPane = new JPanel();
@@ -100,6 +109,45 @@ public class Panes {
 
         addItemToPersonePane.add(LIST_ITEMS_WITHOUT_PERSONE);
     }*/
+
+    public static Person getSelectedPersonNN(boolean reload) throws DaoException {
+        return getSelectedPerson(reload).orElseThrow(() -> new DaoException("Event is not selected"));
+    }
+
+    public static Item getSelectedItemNN(boolean reload) throws DaoException {
+        return getSelectedItem(reload).orElseThrow(() -> new DaoException("Event is not selected"));
+    }
+
+    public static model.Event getSelectedEventNN(boolean reload) throws DaoException {
+        return getSelectedEvent(reload).orElseThrow(() -> new DaoException("Event is not selected"));
+    }
+
+    public static Optional<Person> getSelectedPerson(boolean reload) throws DaoException {
+        Person person = (Person) PERSONE_LIST.getSelectedValue();
+        if (person == null || !reload)
+            return Optional.ofNullable(person);
+
+        PersonDao personDao = MainApp.getDao(PersonDao.class);
+        return personDao.getItem(person.getId());
+    }
+
+    public static Optional<Item> getSelectedItem(boolean reload) throws DaoException {
+        Item item = (Item) ITEMS_LIST.getSelectedValue();
+        if (item == null || !reload)
+            return Optional.ofNullable(item);
+
+        ItemDao itemDao = MainApp.getDao(ItemDao.class);
+        return itemDao.getItem(item.getId());
+    }
+
+    public static Optional<model.Event> getSelectedEvent(boolean reload) throws DaoException {
+        model.Event event = (Event) EVENTS_LIST.getSelectedValue();
+        if (event == null || !reload)
+            return Optional.ofNullable(event);
+
+        EventDao eventDao = MainApp.getDao(EventDao.class);
+        return eventDao.getItem(event.getId());
+    }
 
     private void setAddPersoneToEventPane() {
         GridBagLayout gbl = new GridBagLayout();

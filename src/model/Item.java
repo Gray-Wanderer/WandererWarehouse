@@ -2,7 +2,7 @@ package model;
 
 import data.DaoException;
 import data.PersonDao;
-import view.OpenFrame;
+import view.MainApp;
 
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -105,7 +105,7 @@ public class Item extends DataItem implements Comparable<Item> {
         s.append("Equip info:\n").append(type).append(" ").append(maker).append(" ").append(name).append("\n");
         s.append("At persone: ");
         if (personId != null) {
-            PersonDao personDao = OpenFrame.getDao(PersonDao.class);
+            PersonDao personDao = MainApp.getDao(PersonDao.class);
             s.append(personDao.getItem(personId).map(Person::toString).orElseThrow(() -> new DaoException("Person is not found"))).append("\n");
         } else {
             s.append("none");

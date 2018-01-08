@@ -1,12 +1,16 @@
 package control;
 
+import data.DaoException;
+import data.ItemDao;
+import model.Item;
+import view.MainApp;
+import view.Panes;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Optional;
 
-import static control.DataList.itemsList;
-import static control.DataList.selectedItem;
-import static view.Panes.ITEMS_LIST;
 
 /**
  * Created by Алена on 04.12.2017.
@@ -14,9 +18,16 @@ import static view.Panes.ITEMS_LIST;
 public class DeleteItem implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
-        selectedItem.clearItem();
-        itemsList.remove(selectedItem);
-        ITEMS_LIST.setListData(itemsList.toArray());
-        JOptionPane.showMessageDialog(null, "Success", "Deleting done", JOptionPane.PLAIN_MESSAGE);
+        try {
+            ItemDao itemDao = MainApp.getDao(ItemDao.class);
+
+            Optional<Item> selectedItem = Panes.getSelectedItem(false);
+            selectedItem.ifPresent(itemDao::deleteItem);
+
+            Panes.ITEMS_LIST.setListData(itemDao.getAllItems().toArray());
+            JOptionPane.showMessageDialog(null, "Success", "Deleting done", JOptionPane.PLAIN_MESSAGE);
+        } catch (DaoException e1) {
+            throw new RuntimeException(e1);  //TODO:Gray-Wanderer show error message
+        }
     }
 }

@@ -1,9 +1,8 @@
 package data;
 
-import control.DataList;
 import model.Item;
 import model.Person;
-import view.OpenFrame;
+import view.MainApp;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -29,8 +28,8 @@ public class PersonDao extends AbstractWarehouseDao<Person> {
     public void deleteItem(Person dataItem) throws DaoException {
         checkInitialized();
 
-        ItemDao itemDao = OpenFrame.getDao(ItemDao.class);
-        for (Item item : getAllDependentItems(DataList.getSelectedPersonNN(false))) {
+        ItemDao itemDao = MainApp.getDao(ItemDao.class);
+        for (Item item : getAllDependentItems(dataItem)) {
             item.setPersonId(null);
             itemDao.updateItem(item);
         }
