@@ -1,5 +1,6 @@
 package data.xmlstorage;
 
+import data.xmlstorage.saverstrategy.AbstractStorageStrategy;
 import model.DataItem;
 import model.Event;
 import model.Item;
@@ -8,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +22,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testCreateData() {
-        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorageWithData();
 
         for (DataItem item : createTestData()) {
             Assert.assertEquals(item, xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new));
@@ -29,7 +31,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testDeleteData() {
-        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorageWithData();
 
         for (DataItem item : createTestData()) {
             xmlWarehouseDao.deleteItem(item);
@@ -39,7 +41,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testDeleteDataById() {
-        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorageWithData();
 
         for (DataItem item : createTestData()) {
             xmlWarehouseDao.deleteItemById(item.getId(), item.getClass());
@@ -49,7 +51,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testIsolationData() {
-        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorageWithData();
 
         for (DataItem item : createTestData()) {
             DataItem newItem = xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new);
@@ -62,7 +64,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testUpdateData() {
-        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorageWithData();
 
         for (DataItem item : createTestData()) {
             DataItem oldItem = xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new);
@@ -77,11 +79,10 @@ public class TestXmlWarehouseStorage {
     public void testStorageData() {
         XmlWarehouseStorage xmlWarehouseDao = null;
         try {
-            xmlWarehouseDao = getXmlWarehouseStorage();
+            xmlWarehouseDao = getXmlWarehouseStorageWithData();
             xmlWarehouseDao.end();
 
-            XmlWarehouseStorage newXmlWarehouseDao = new XmlWarehouseStorage();
-            newXmlWarehouseDao.init(null);
+            XmlWarehouseStorage newXmlWarehouseDao = getXmlWarehouseStorage();
 
             for (DataItem item : createTestData()) {
                 Assert.assertEquals(item, newXmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new));
@@ -135,10 +136,14 @@ public class TestXmlWarehouseStorage {
 
     private XmlWarehouseStorage getXmlWarehouseStorage() {
         XmlWarehouseStorage xmlWarehouseDao = new XmlWarehouseStorage();
-        xmlWarehouseDao.init(null);
+        xmlWarehouseDao.init(Collections.singletonMap(AbstractStorageStrategy.DATA_DIRECTORY_PARAM, "test_data"));
 
+        return xmlWarehouseDao;
+    }
+
+    private XmlWarehouseStorage getXmlWarehouseStorageWithData() {
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
         createTestData().forEach(xmlWarehouseDao::addItem);
-
         return xmlWarehouseDao;
     }
 

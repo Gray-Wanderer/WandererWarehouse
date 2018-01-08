@@ -14,6 +14,7 @@ idea {
         excludeDirs += file('build')
         excludeDirs += file('fileTemplates')
         excludeDirs += file('data')
+        excludeDirs += file('test_data')
         jdkName = '1.8'
         downloadJavadoc = true
         downloadSources = true

@@ -7,6 +7,7 @@ import model.Person;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,12 +20,16 @@ public class TestStorageStrategy {
     @Test
     public void testFileByClassStorageStrategy() {
         StorageStrategy storageStrategy = new FileByClassStorageStrategy();
+        storageStrategy.init(Collections.singletonMap(AbstractStorageStrategy.DATA_DIRECTORY_PARAM, "test_data"));
+
         testStorageStrategy(storageStrategy);
     }
 
     @Test
     public void testSingleFileStorageStrategy() {
         StorageStrategy storageStrategy = new SingleFileStorageStrategy();
+        storageStrategy.init(Collections.singletonMap(AbstractStorageStrategy.DATA_DIRECTORY_PARAM, "test_data"));
+
         testStorageStrategy(storageStrategy);
     }
 
