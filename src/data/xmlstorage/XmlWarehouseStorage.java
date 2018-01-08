@@ -3,12 +3,12 @@ package data.xmlstorage;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import data.DaoException;
-import model.DataItem;
 import data.WarehouseStorage;
 import data.xmlstorage.saverstrategy.FileByClassStorageStrategy;
 import data.xmlstorage.saverstrategy.SingleFileStorageStrategy;
 import data.xmlstorage.saverstrategy.StorageStrategy;
 import exceptions.DevelopmentException;
+import model.DataItem;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +31,7 @@ public class XmlWarehouseStorage implements WarehouseStorage {
     @Override
     public void init(@Nullable Map<String, Object> params) {
         storageStrategy = getStorageStrategy(params);
+        storageStrategy.init(params);
 
         inMemoryBase = storageStrategy.load();
     }

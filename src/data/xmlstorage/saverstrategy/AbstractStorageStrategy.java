@@ -1,7 +1,9 @@
 package data.xmlstorage.saverstrategy;
 
-import model.DataItem;
+import com.sun.istack.internal.Nullable;
 import data.xmlstorage.XmlWarehouseDaoException;
+import exceptions.DevelopmentException;
+import model.DataItem;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,14 +16,42 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Gray-Wanderer on 06.01.2018.
  */
 public abstract class AbstractStorageStrategy implements StorageStrategy {
 
-    protected static final String DATA_DIRECTORY = "data";
+    private static final String DEFAULT_DATA_DIRECTORY = "data";
     protected static final String TMP_FILE_PREFIX = "_";
+
+    private boolean initialized = false;
+    protected String dataDirectory = null;
+
+    @Override
+    public void init(@Nullable Map<String, Object> params) {
+        dataDirectory = getDataDirectory(params);
+
+        initialized = true;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    private String getDataDirectory(@Nullable Map<String, Object> params) {
+        Object directoryParam = params != null ? params.get(DATA_DIRECTORY_PARAM) : null;
+        if (directoryParam != null) {
+            if (directoryParam instanceof String) {
+                return (String) directoryParam;
+            } else {
+                throw new DevelopmentException("DATA_DIRECTORY_PARAM should be a String");
+            }
+        }
+        return DEFAULT_DATA_DIRECTORY;
+    }
 
     protected void saveDataClass(Wrapper wrapper, String tmpFileName, Class... classesForJAXB) {
         createDataDirectoryIfNotExists();
@@ -69,10 +99,12 @@ public abstract class AbstractStorageStrategy implements StorageStrategy {
     }
 
     private void createDataDirectoryIfNotExists() {
-        File dataDirectory = new File(DATA_DIRECTORY);
-        if (!dataDirectory.exists()) {
-            if (!dataDirectory.mkdir())
-                throw new XmlWarehouseDaoException("Can't create directory '" + DATA_DIRECTORY + "'");
+        if (!this.dataDirectory.isEmpty()) {
+            File dataDirectory = new File(this.dataDirectory);
+            if (!dataDirectory.exists()) {
+                if (!dataDirectory.mkdir())
+                    throw new XmlWarehouseDaoException("Can't create directory '" + this.dataDirectory + "'");
+            }
         }
     }
 

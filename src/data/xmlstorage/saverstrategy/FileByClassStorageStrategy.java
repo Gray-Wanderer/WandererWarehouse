@@ -1,8 +1,9 @@
 package data.xmlstorage.saverstrategy;
 
 import com.sun.istack.internal.NotNull;
-import model.DataItem;
 import data.xmlstorage.XmlWarehouseDaoException;
+import exceptions.DevelopmentException;
+import model.DataItem;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -34,8 +35,12 @@ public class FileByClassStorageStrategy extends AbstractStorageStrategy {
 
     @Override
     public Map<Class<? extends DataItem>, Map<Object, DataItem>> load() {
-        return DATA_CLASSES.stream()
-                .collect(Collectors.toMap(clazz -> clazz, this::loadDataFromClass));
+        if (isInitialized()) {
+            return DATA_CLASSES.stream()
+                    .collect(Collectors.toMap(clazz -> clazz, this::loadDataFromClass));
+        } else {
+            throw new DevelopmentException("Storage isn't initialized");
+        }
     }
 
     private Map<Object, DataItem> loadDataFromClass(Class<? extends DataItem> itemClass) {
@@ -58,11 +63,11 @@ public class FileByClassStorageStrategy extends AbstractStorageStrategy {
     }
 
     private String getFilename(Class clazz) {
-        return DATA_DIRECTORY + File.separator + clazz.getSimpleName() + FILE_EXT;
+        return dataDirectory + File.separator + clazz.getSimpleName() + FILE_EXT;
     }
 
     private String getTmpFilename(Class clazz) {
-        return DATA_DIRECTORY + File.separator + TMP_FILE_PREFIX + clazz.getSimpleName() + FILE_EXT;
+        return dataDirectory + File.separator + TMP_FILE_PREFIX + clazz.getSimpleName() + FILE_EXT;
     }
 
     @Override
