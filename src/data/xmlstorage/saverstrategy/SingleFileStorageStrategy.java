@@ -1,7 +1,8 @@
 package data.xmlstorage.saverstrategy;
 
-import model.DataItem;
 import data.xmlstorage.XmlWarehouseDaoException;
+import exceptions.DevelopmentException;
+import model.DataItem;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,11 +35,11 @@ public class SingleFileStorageStrategy extends AbstractStorageStrategy {
     }
 
     private String getFileName() {
-        return DATA_DIRECTORY + File.separator + FILE_NAME;
+        return dataDirectory + File.separator + FILE_NAME;
     }
 
     private String getTmpFileName() {
-        return DATA_DIRECTORY + File.separator + TMP_FILE_PREFIX + FILE_NAME;
+        return dataDirectory + File.separator + TMP_FILE_PREFIX + FILE_NAME;
     }
 
     private Class[] getClassesForJAXB() {
@@ -50,17 +51,21 @@ public class SingleFileStorageStrategy extends AbstractStorageStrategy {
 
     @Override
     public Map<Class<? extends DataItem>, Map<Object, DataItem>> load() {
-        File file = XmlHelper.getFileFromName(getFileName(), true);
-        if (file == null) {
-            Map<Class<? extends DataItem>, Map<Object, DataItem>> result = new HashMap<>();
-            DATA_CLASSES.forEach(clazz -> result.put(clazz, new HashMap<>()));
-            return result;
-        }
+        if (isInitialized()) {
+            File file = XmlHelper.getFileFromName(getFileName(), true);
+            if (file == null) {
+                Map<Class<? extends DataItem>, Map<Object, DataItem>> result = new HashMap<>();
+                DATA_CLASSES.forEach(clazz -> result.put(clazz, new HashMap<>()));
+                return result;
+            }
 
-        try {
-            return XmlHelper.readData(file, SingleFileWrapper.class, getClassesForJAXB()).getDataItems();
-        } catch (JAXBException e) {
-            throw new XmlWarehouseDaoException(getFileName() + " parsing error", e);
+            try {
+                return XmlHelper.readData(file, SingleFileWrapper.class, getClassesForJAXB()).getDataItems();
+            } catch (JAXBException e) {
+                throw new XmlWarehouseDaoException(getFileName() + " parsing error", e);
+            }
+        } else {
+            throw new DevelopmentException("Storage isn't initialized");
         }
     }
 

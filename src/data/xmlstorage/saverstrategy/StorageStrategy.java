@@ -1,5 +1,6 @@
 package data.xmlstorage.saverstrategy;
 
+import com.sun.istack.internal.Nullable;
 import model.DataItem;
 import model.Event;
 import model.Item;
@@ -15,12 +16,17 @@ import java.util.Map;
  */
 public interface StorageStrategy {
 
+    String DATA_DIRECTORY_PARAM = "DATA_DIRECTORY_PARAM";
+
     List<Class<? extends DataItem>> DATA_CLASSES = Collections.unmodifiableList(Arrays.asList(Event.class, Item.class, Person.class));
 
     void save(Map<Class<? extends DataItem>, Map<Object, DataItem>> data);
+
+    void init(@Nullable Map<String, Object> params);
 
     Map<Class<? extends DataItem>, Map<Object, DataItem>> load();
 
     void clearAllData();
 
+    boolean isInitialized();
 }
