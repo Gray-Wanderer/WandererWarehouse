@@ -2,7 +2,7 @@ package model;
 
 import data.DaoException;
 import data.EventDao;
-import view.OpenFrame;
+import view.MainApp;
 
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
@@ -97,7 +97,7 @@ public class Person extends DataItem implements Comparable<Person> {
         s.append(name).append(" ").append(surname)
                 .append("\nAt event: ");
         if (eventId != null) {
-            EventDao eventDao = OpenFrame.getDao(EventDao.class);
+            EventDao eventDao = MainApp.getDao(EventDao.class);
             s.append(eventDao.getItem(eventId).map(Event::toString).orElseThrow(() -> new DaoException("Event is not found")));
         } else {
             s.append("none");

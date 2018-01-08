@@ -14,7 +14,11 @@ import static view.Panes.createEventPane;
  * Created by Алена on 28.11.2017.
  */
 public class CreateEvent implements ActionListener {
-    AddEvent addEvent = new AddEvent();
+    private AddEvent addEvent;
+
+    public CreateEvent() {
+        addEvent = new AddEvent();
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
