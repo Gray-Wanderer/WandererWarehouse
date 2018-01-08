@@ -3,7 +3,7 @@ package data;
 /**
  * @author Gray-Wanderer on 06.01.2018.
  */
-public class DaoException extends Exception {
+public class DaoException extends RuntimeException {
 
 
     public DaoException(String message) {
