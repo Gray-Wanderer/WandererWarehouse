@@ -1,6 +1,5 @@
 package data.xmlstorage;
 
-import data.DaoException;
 import model.DataItem;
 import model.Event;
 import model.Item;
@@ -21,7 +20,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testCreateData() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = getXmlWarehouseDaoForTest();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
 
         for (DataItem item : createTestData()) {
             Assert.assertEquals(item, xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new));
@@ -30,7 +29,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testDeleteData() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = getXmlWarehouseDaoForTest();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
 
         for (DataItem item : createTestData()) {
             xmlWarehouseDao.deleteItem(item);
@@ -40,7 +39,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testDeleteDataById() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = getXmlWarehouseDaoForTest();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
 
         for (DataItem item : createTestData()) {
             xmlWarehouseDao.deleteItemById(item.getId(), item.getClass());
@@ -50,7 +49,7 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testIsolationData() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = getXmlWarehouseDaoForTest();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
 
         for (DataItem item : createTestData()) {
             DataItem newItem = xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new);
@@ -63,25 +62,25 @@ public class TestXmlWarehouseStorage {
 
     @Test
     public void testUpdateData() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = getXmlWarehouseDaoForTest();
+        XmlWarehouseStorage xmlWarehouseDao = getXmlWarehouseStorage();
 
         for (DataItem item : createTestData()) {
             DataItem oldItem = xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new);
             DataItem newItem = xmlWarehouseDao.getItem(item.getId(), item.getClass()).orElseThrow(AssertionError::new);
             modifyDate(newItem);
-            xmlWarehouseDao.updateItemTest(newItem);
+            xmlWarehouseDao.updateItem(newItem);
             Assert.assertNotEquals(oldItem, xmlWarehouseDao.getItem(newItem.getId(), newItem.getClass()).orElseThrow(AssertionError::new));
         }
     }
 
     @Test
     public void testStorageData() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = null;
+        XmlWarehouseStorage xmlWarehouseDao = null;
         try {
-            xmlWarehouseDao = getXmlWarehouseDaoForTest();
+            xmlWarehouseDao = getXmlWarehouseStorage();
             xmlWarehouseDao.end();
 
-            XmlWarehouseStorageForTest newXmlWarehouseDao = new XmlWarehouseStorageForTest();
+            XmlWarehouseStorage newXmlWarehouseDao = new XmlWarehouseStorage();
             newXmlWarehouseDao.init(null);
 
             for (DataItem item : createTestData()) {
@@ -134,32 +133,13 @@ public class TestXmlWarehouseStorage {
     }
 
 
-    private XmlWarehouseStorageForTest getXmlWarehouseDaoForTest() {
-        XmlWarehouseStorageForTest xmlWarehouseDao = new XmlWarehouseStorageForTest();
+    private XmlWarehouseStorage getXmlWarehouseStorage() {
+        XmlWarehouseStorage xmlWarehouseDao = new XmlWarehouseStorage();
         xmlWarehouseDao.init(null);
 
-        createTestData().forEach(xmlWarehouseDao::addItemTest);
+        createTestData().forEach(xmlWarehouseDao::addItem);
 
         return xmlWarehouseDao;
-    }
-
-    private static class XmlWarehouseStorageForTest extends XmlWarehouseStorage {
-        public void addItemTest(DataItem dataItem) {
-            try {
-                super.addItem(dataItem);
-            } catch (DaoException e) {
-                throw new AssertionError(e);
-            }
-        }
-
-        public void updateItemTest(DataItem dataItem) {
-            try {
-                super.updateItem(dataItem);
-            } catch (DaoException e) {
-                throw new AssertionError(e);
-            }
-        }
-
     }
 
 }
