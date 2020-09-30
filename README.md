@@ -1,5 +1,7 @@
 # WandererWarehouse
 
+Приложение для учёта снаряжения
+
 ## Getting Started
 
 ### Installing
