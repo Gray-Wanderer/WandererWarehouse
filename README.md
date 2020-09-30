@@ -1,5 +1,8 @@
 # WandererWarehouse
 
+Приложение для учёта снаряжения на складе.
+Ветка main - специально для теста.
+
 ## Getting Started
 
 ### Installing

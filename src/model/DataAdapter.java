@@ -15,6 +15,17 @@ import static control.DataList.setDecodeData;
  * Created by Алена on 04.12.2017.
  */
 public class DataAdapter {
+    public static void createNew(File file) {
+        try {
+            boolean created = file.createNewFile();
+            if (!created) {
+                throw new RuntimeException("Error on create data file");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error on create data file", e);
+        }
+    }
+
     public static void codeXML(File file) {
         try {
             DataList data = new DataList();
@@ -35,7 +46,7 @@ public class DataAdapter {
             DataList data = (DataList) um.unmarshal(file);
             setDecodeData();
         } catch (JAXBException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Data file was corrupted", e);
         }
     }
 }
